@@ -1,68 +1,115 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Storybook integration
 
-## Available Scripts
+#### 1. General integration
 
-In the project directory, you can run:
+All storybook related config lives in the `.storybook` folder in the root. Stories however are recommended to be kept in the vicinity of the elements they represent. Stories are unit tests in our case, so having the following convention can simplify things:
 
-### `yarn start`
+```
+src/components/Button/Button.jss
+src/components/Button/Button.stories.js
+...
+```
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### 2. New NPM scripts
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+New NPM scripts added to run storybook supporting tests. For development time, `npm run storybook:start` should be used. Ideal case storybook reflects strictly UI components, therefore it is not needed to run the app itself, nor the backend.
 
-### `yarn test`
+#### 3. How to write a story
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Storybook recommends using the new CSF format over the `storiesOf` API. The body of the story remains the same, only the export changes. The title of the default export will become as the wrapper around the given stories, and every named export will behave like a single story, under the wrapper. Stories can be further customized like getting unique parameters and decorators.
+We identify two different type of story. One would be equivalent of a unit test, another would be of an integration test.
 
-### `yarn build`
+**Unit test, Single component, #snap**
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Single, reusable, strict UI elements. Buttons, texts, boxes, simple inputs, divs, icons ...etc.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export const success = () => <Button variant="success" label={text("label", "Congratulation")} />;
+export const info = () => <Button variant="info" label={text("label", "Upload Video")} />;
+export const danger = () => <Button variant="danger" label={text("label", "Delete Account")} />;
 
-### `yarn eject`
+const TYPE = '(snapshot)'
+export default {
+  title: `Components/Button ${TYPE}`,
+  component: Button,
+  decorators: [],
+};
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Integration test, Composite pages, #visual**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Composite pages, made out of UI elements. Pages, grids, layouts, forms, headers, navbars ...etc
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Login.js:
 
-## Learn More
+```
+    <main>
+        <div>
+            <Title variant="sub" title="Log in here"/>
+            <Button variant="info" label="Log in" />
+        </div>
+    </main>
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+import Login from "./Login"
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export const loginScreen = () => <Login/>
+```
 
-### Code Splitting
+#### 4. Addons
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+**Knobs:**
 
-### Analyzing the Bundle Size
+Automatically available for every story.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+https://www.npmjs.com/package/@storybook/addon-knobs
+https://www.learnstorybook.com/intro-to-storybook/react/en/using-addons/
 
-### Making a Progressive Web App
+**Docs:**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Automatically available for every story. Document resources are computed from many different soruces automatically,
+most importantly from propTypes. For using .MDX syntax, further configuration with jest is required.
 
-### Advanced Configuration
+https://www.npmjs.com/package/@storybook/addon-docs
+https://medium.com/storybookjs/storybook-docspage-e185bc3622bf
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+**Viewport:**
 
-### Deployment
+Automatically available for every story. The list of default used viewport devices can be extended in the storybook
+configuration files.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+https://www.npmjs.com/package/@storybook/addon-viewport
 
-### `yarn build` fails to minify
+**A11y:**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Automatically available for every story.
+
+https://www.npmjs.com/package/@storybook/addon-a11y
+
+**Storyshots (for snapshot testing):**
+
+Automatically running for every story which is tagged with `#snap`. Uses Jest for snapshot testing.
+
+https://github.com/storybookjs/storybook/tree/master/addons/storyshots/storyshots-core
+
+**Storyshots - pptr (for visual testing):**
+
+Automatically running for every story which is tagged with `#visual`. Uses Puppeteer for visual testing.
+
+https://github.com/storybookjs/storybook/tree/master/addons/storyshots/storyshots-puppeteer
+
+#### 5. Snapshot testing
+
+Snapshot tests run on all the `#snap` tagged stories automatically on a pre-commit hook. Snapshots are saved in the `<rootdir>/__tests__/snapshots` folder, where other settings can be found as well. If a certain snapshot is not present, jest would automatically generate it. If they are present they are being compared with the latest stage of the components. Because of this, it is important to keep commiting snapshots as well.
+If change in the code is intentional and verified, use the CLI to update the snapshots and commit those together with the changes in the code!
+
+NPM command: `npm run storybook:snapshot:test`
+
+#### 6. Visual testing
+
+Visual tests run on all the `#visual` tagged stories automatically on a pre-push hook. Screenshots are saved in the `<rootdir>/__tests__/automated-visual` folder, where other settings can be found as well. Has similar logic as the snapshot testing, however here pixels are being compared, and flagged in case of a mismatch. Uses puppeteer for rendering stories during the test.
+
+NPM command: `npm run storybook:visual:test`

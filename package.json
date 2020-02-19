@@ -1,34 +1,51 @@
 {
-  "name": "cra-storybook-example",
+  "name": "koppanykondricz",
   "version": "0.1.0",
-  "private": true,
+  "author": "Koppany Kondricz <kondricz@outlook.com>",
+  "private": false,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
+    "prop-types": "latest",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.4.0"
+    "react-scripts": "^3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "react:start": "react-scripts start",
+    "react:build": "react-scripts build",
+    "storybook:integration:test": "jest __tests__/automated-visual/storybook-all.js -c __tests__/automated-visual/jest.config.js",
+    "storybook:start": "start-storybook -p 6006 -s src",
+    "storybook:snapshot:test": "jest __tests__/snapshots/storybook-all.js -c __tests__/snapshots/jest.config.js",
+    "storybook:snapshot:update": "jest __tests__/snapshots/storybook-all.js -c __tests__/snapshots/jest.config.js --updateSnapshot",
+    "storybook:visual:test": "cross-env NODE_ENV=test start-server-and-test storybook:start http-get://localhost:6006 storybook:integration:test"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@storybook/addon-a11y": "^5.3.13",
+    "@storybook/addon-docs": "^5.3.13",
+    "@storybook/addon-knobs": "^5.3.13",
+    "@storybook/addon-storyshots": "^5.3.13",
+    "@storybook/addon-storyshots-puppeteer": "^5.3.13",
+    "@storybook/addon-viewport": "^5.3.13",
+    "@storybook/addons": "^5.3.13",
+    "@storybook/preset-create-react-app": "^1.5.2",
+    "@storybook/react": "^5.3.13",
+    "babel-jest": "^25.1.0",
+    "babel-plugin-react-docgen": "^4.1.0",
+    "babel-plugin-require-context-hook": "^1.0.0",
+    "cross-env": "^7.0.0",
+    "jest": "^25.1.0",
+    "jest-image-snapshot": "^2.12.0",
+    "jest-puppeteer": "^4.4.0",
+    "puppeteer": "^2.1.1",
+    "react-test-renderer": "^16.12.0",
+    "require-context.macro": "^1.2.2",
+    "start-server-and-test": "^1.10.8"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie < 11",
+    "not op_mini all"
+  ]
 }

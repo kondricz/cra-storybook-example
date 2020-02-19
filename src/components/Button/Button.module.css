@@ -1,0 +1,47 @@
+.base {
+        padding: 8px;
+        margin: 8px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Dosis', sans-serif;
+        border: none;
+        transition: 800ms all ease-in-out;
+        min-width: 100px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+.danger {
+    background-color: #c91d92;
+    color: #fce9f6;
+}
+
+.danger:hover {
+    background-color: #fce9f6;
+    color: #c91d92;
+    transition: 400ms all ease-in-out; 
+}
+
+.info {
+    background-color: #2a6588;
+    color: #c5deed;
+}
+
+.info:hover {
+    background-color: #c5deed;
+    color: #2a6588;
+    transition: 400ms all ease-in-out; 
+}
+
+.success {
+    background-color: #F9FCFB;
+    color: #21BF73;
+}
+
+.success:hover {
+    background-color: #21BF73;
+    color: #F9FCFB;
+    transition: 400ms all ease-in-out; 
+}
